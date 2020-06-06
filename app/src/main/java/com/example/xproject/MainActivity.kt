@@ -1,5 +1,6 @@
 package com.example.xproject
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,12 +17,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         var retrofit = Retrofit.Builder()
-                .baseUrl("http://10.10.1.67:8000")
+                .baseUrl("http://10.10.0.72:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         // baseUrl은 내 local 주소
         var loginService: LoginService = retrofit.create(LoginService::class.java)
 
+        // 로그인하는 경우
         button.setOnClickListener {
             var textId = editTextTextPersonName.text.toString()
             var textPw = editTextTextPassword.text.toString()
@@ -45,6 +47,14 @@ class MainActivity : AppCompatActivity() {
                     dialog.show()
                 }
             })
+        }
+        
+        //회원가입 화면으로 가는 경우
+        signup_button.setOnClickListener {
+            val intent = Intent(this, SignupActivity::class.java)
+
+            startActivity(intent)
+            finish()
         }
     }
 }
