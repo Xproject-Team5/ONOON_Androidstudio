@@ -15,29 +15,29 @@ import androidx.core.content.FileProvider
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_add_face.*
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_rightface.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddFaceActivity : AppCompatActivity() {
+class RightfaceActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     lateinit var curPhotoPath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_face)
+        setContentView(R.layout.activity_rightface)
 
         setPermission()//맨처음에 권한실행
 
-        frontface_button.setOnClickListener {
+        rightface_button.setOnClickListener {
             takeCapture()//사진촬영
         }
 
-        rightnext_button.setOnClickListener {
-            val intent = Intent(this, RightfaceActivity::class.java)
+        leftnext_button.setOnClickListener {
+            val intent = Intent(this, LeftfaceActivity::class.java)
 
             startActivity(intent)
             finish()
@@ -79,11 +79,11 @@ class AddFaceActivity : AppCompatActivity() {
     private fun setPermission() {
         val permission = object : PermissionListener {
             override fun onPermissionGranted() {//허용되었을경우 이거 수행
-                Toast.makeText(this@AddFaceActivity, "권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RightfaceActivity, "권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                Toast.makeText(this@AddFaceActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RightfaceActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
             }
         }
         TedPermission.with(this)
@@ -104,14 +104,14 @@ class AddFaceActivity : AppCompatActivity() {
             val file = File(curPhotoPath)
             if (Build.VERSION.SDK_INT < 28){
                 bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
-                frontface.setImageBitmap(bitmap)
+                rightface.setImageBitmap(bitmap)
             }else{
                 val decode = ImageDecoder.createSource(
                     this.contentResolver,
                     Uri.fromFile(file)
                 )
                 bitmap = ImageDecoder.decodeBitmap(decode)
-                frontface.setImageBitmap(bitmap)
+                rightface.setImageBitmap(bitmap)
             }
             savePhoto(bitmap)
         }

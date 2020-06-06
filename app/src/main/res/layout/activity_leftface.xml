@@ -4,22 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddfaceActivity">
-
-    <Button
-        android:id="@+id/frontface_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:text="정면얼굴"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frontface" />
+    tools:context=".LeftfaceActivity">
 
     <ImageView
-        android:id="@+id/frontface"
+        android:id="@+id/leftface"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginStart="8dp"
@@ -27,13 +15,27 @@
         android:layout_marginTop="200dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:src="@drawable/ic_launcher_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/ic_launcher_background" />
 
     <Button
-        android:id="@+id/rightnext_button"
+        android:id="@+id/leftface_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="좌측얼굴등록"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/leftface" />
+
+    <Button
+        android:id="@+id/finish_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -41,9 +43,9 @@
         android:layout_marginTop="100dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="우측얼굴등록"
+        android:text="얼굴등록완료"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frontface_button" />
+        app:layout_constraintTop_toBottomOf="@+id/leftface_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
