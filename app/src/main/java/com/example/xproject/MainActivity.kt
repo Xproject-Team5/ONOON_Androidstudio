@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
@@ -41,18 +42,22 @@ class MainActivity : AppCompatActivity() {
                         Log.d("LOGIN","msg : "+login?.msg)
                         Log.d("LOGIN","code : "+login?.code)
                         var dialog = AlertDialog.Builder(this@MainActivity)
-                        dialog.setTitle("알람!")
+                        /*dialog.setTitle("알람!")
                         dialog.setMessage("id = "+textId +" pw = "+textPw)
                         dialog.setMessage("code = " + login?.code + " msg = " + login?.msg)
-                        dialog.show()
+                        dialog.show()*/
+                        Toast.makeText(this@MainActivity, "로그인이 되었습니다.", Toast.LENGTH_SHORT).show()
+
                     }
             })
+                val intent = Intent(this, OpendoorActivity::class.java)
+                startActivity(intent)
+            finish()
         }
         
         //회원가입 화면으로 가는 경우
         signup_button.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
-
             startActivity(intent)
             finish()
         }

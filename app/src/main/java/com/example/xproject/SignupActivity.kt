@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_signup.*
@@ -24,13 +25,16 @@ class SignupActivity : AppCompatActivity() {
 
         var signupservice: SignupService = retrofit.create(SignupService::class.java)
 
+
+
+
         register_addface.setOnClickListener {
             var textId = register_id.text.toString()
             var textPw = register_pass.text.toString()
             var textName = register_name.text.toString()
             signupservice.requestSignup(textId, textPw, textName).enqueue(object : Callback<Signup> {
                 override fun onFailure(call: Call<Signup>, t: Throwable) {
-                    Log.e("DEBUG", t.message)
+                    Log.e("DEBUG1", t.message)
                     var dialog = AlertDialog.Builder(this@SignupActivity)
                     dialog.setTitle("실패")
                     dialog.setMessage("통신에 실패했습니다..")
@@ -41,13 +45,13 @@ class SignupActivity : AppCompatActivity() {
                     Log.d("LOGIN","msg : "+login?.msg)
                     Log.d("LOGIN","code : "+login?.code)
                     var dialog = AlertDialog.Builder(this@SignupActivity)
-                    dialog.setTitle("알람!")
+                    /*dialog.setTitle("알람!")
                     dialog.setMessage("id = "+textId +" pw = "+textPw+" name = "+textName)
                     dialog.setMessage("code = " + login?.code + " msg = " + login?.msg)
-                    dialog.show()
+                    dialog.show()*/
+                    Toast.makeText(this@SignupActivity, "사진을 찍으세요.", Toast.LENGTH_SHORT).show()
                 }
             })
-
                 val intent = Intent(this, AddFaceActivity::class.java)
                 startActivity(intent)
             finish()

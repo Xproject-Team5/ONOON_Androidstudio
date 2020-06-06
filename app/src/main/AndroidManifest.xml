@@ -20,7 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".LeftfaceActivity"></activity>
+        <activity android:name=".OpendoorActivity"></activity>
+        <activity android:name=".LeftfaceActivity" />
         <activity android:name=".RightfaceActivity" />
         <activity android:name=".AddFaceActivity" />
         <activity android:name=".SignupActivity" />
