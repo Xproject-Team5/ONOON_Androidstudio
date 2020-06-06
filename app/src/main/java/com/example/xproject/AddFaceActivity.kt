@@ -1,7 +1,9 @@
 package com.example.xproject
 
 import android.app.Activity
+import android.app.TaskStackBuilder.create
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase.create
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -12,13 +14,21 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_add_face.*
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.net.URI.create
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,6 +40,13 @@ class AddFaceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_face)
 
+        //보내기
+        /*var retrofit = Retrofit.Builder()
+            .baseUrl("http://10.10.0.72:8000")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        var post_Porfile_Requestart: CamaraSerivice = retrofit.create(CamaraSerivice::class.java)*/
+
         setPermission()//맨처음에 권한실행
 
         frontface_button.setOnClickListener {
@@ -37,6 +54,12 @@ class AddFaceActivity : AppCompatActivity() {
         }
 
         rightnext_button.setOnClickListener {
+
+
+
+
+
+
             val intent = Intent(this, RightfaceActivity::class.java)
 
             startActivity(intent)
@@ -98,10 +121,13 @@ class AddFaceActivity : AppCompatActivity() {
     // 사진이 찍혔다는 신호가 오면
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
             val bitmap: Bitmap
             val file = File(curPhotoPath)
+            //추가
+            //var requestBody : RequestBody = RequestBody.create(MediaType.parse("image/*"),file)
+            //var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file",fileName,requestBody)
+
             if (Build.VERSION.SDK_INT < 28){
                 bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
                 frontface.setImageBitmap(bitmap)
@@ -117,7 +143,9 @@ class AddFaceActivity : AppCompatActivity() {
         }
 
 
+
     }
+
 
     private fun savePhoto(bitmap: Bitmap) {//갤러리에 저장
         val folderPath = Environment.getExternalStorageDirectory().absolutePath + "/Pictures/"

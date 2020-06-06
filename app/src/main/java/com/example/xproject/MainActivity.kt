@@ -29,23 +29,23 @@ class MainActivity : AppCompatActivity() {
             var textPw = editTextTextPassword.text.toString()
 
             loginService.requestLogin(textId, textPw).enqueue(object : Callback<Login> {
-                override fun onFailure(call: Call<Login>, t: Throwable) {
-                    Log.e("DEBUG", t.message)
-                    var dialog = AlertDialog.Builder(this@MainActivity)
-                    dialog.setTitle("실패")
-                    dialog.setMessage("통신에 실패했습니다..")
-                    dialog.show()
-                }
-                override fun onResponse(call: Call<Login>, response: Response<Login>) {
-                    var login = response.body()
-                    Log.d("LOGIN","msg : "+login?.msg)
-                    Log.d("LOGIN","code : "+login?.code)
-                    var dialog = AlertDialog.Builder(this@MainActivity)
-                    dialog.setTitle("알람!")
-                    dialog.setMessage("id = "+textId +" pw = "+textPw)
-                    dialog.setMessage("code = " + login?.code + " msg = " + login?.msg)
-                    dialog.show()
-                }
+                    override fun onFailure(call: Call<Login>, t: Throwable) {
+                        Log.e("DEBUG", t.message)
+                        var dialog = AlertDialog.Builder(this@MainActivity)
+                        dialog.setTitle("실패")
+                        dialog.setMessage("통신에 실패했습니다..")
+                        dialog.show()
+                    }
+                    override fun onResponse(call: Call<Login>, response: Response<Login>) {
+                        var login = response.body()
+                        Log.d("LOGIN","msg : "+login?.msg)
+                        Log.d("LOGIN","code : "+login?.code)
+                        var dialog = AlertDialog.Builder(this@MainActivity)
+                        dialog.setTitle("알람!")
+                        dialog.setMessage("id = "+textId +" pw = "+textPw)
+                        dialog.setMessage("code = " + login?.code + " msg = " + login?.msg)
+                        dialog.show()
+                    }
             })
         }
         
