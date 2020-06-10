@@ -10,13 +10,6 @@ class OpendoorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_opendoor)
-        /*
-        open_button.setOnClickListener {
-            val intent = Intent(this, OpendoorActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-        */
         exit_button.setOnClickListener {
             finish()
         }

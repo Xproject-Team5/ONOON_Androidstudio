@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         var retrofit = Retrofit.Builder()
-                .baseUrl("http://10.10.0.72:8000")
+                .baseUrl("http://10.10.0.162:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         // baseUrl은 내 local 주소
@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             var textId = editTextTextPersonName.text.toString()
             var textPw = editTextTextPassword.text.toString()
+            val intent = Intent(this, OpendoorActivity::class.java)
 
             loginService.requestLogin(textId, textPw).enqueue(object : Callback<Login> {
                     override fun onFailure(call: Call<Login>, t: Throwable) {
@@ -38,21 +39,20 @@ class MainActivity : AppCompatActivity() {
                         dialog.show()
                     }
                     override fun onResponse(call: Call<Login>, response: Response<Login>) {
-                        var login = response.body()
-                        Log.d("LOGIN","msg : "+login?.msg)
-                        Log.d("LOGIN","code : "+login?.code)
-                        var dialog = AlertDialog.Builder(this@MainActivity)
-                        /*dialog.setTitle("알람!")
-                        dialog.setMessage("id = "+textId +" pw = "+textPw)
-                        dialog.setMessage("code = " + login?.code + " msg = " + login?.msg)
-                        dialog.show()*/
-                        Toast.makeText(this@MainActivity, "로그인이 되었습니다.", Toast.LENGTH_SHORT).show()
+                        if (response?.isSuccessful) {
+                            var login = response.body()
+                            Log.d("LOGIN", "msg : " + login?.msg)
+                            Log.d("LOGIN", "code : " + login?.code)
+                            var dialog = AlertDialog.Builder(this@MainActivity)
+                            Toast.makeText(this@MainActivity, "로그인이 되었습니다.", Toast.LENGTH_SHORT).show()
+                            startActivity(intent)
+                            finish()
+                        }else{
+                            Toast.makeText(this@MainActivity, "로그인이 실패하셨습니다.", Toast.LENGTH_SHORT).show()
+                        }
 
                     }
             })
-                val intent = Intent(this, OpendoorActivity::class.java)
-                startActivity(intent)
-            finish()
         }
         
         //회원가입 화면으로 가는 경우

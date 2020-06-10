@@ -14,6 +14,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -21,9 +22,11 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_add_face.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_signup.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,12 +46,9 @@ class AddFaceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_face)
-        /*
-        if(intent.hasExtra("msg"))
-        {
-            userdata.text = intent.getStringExtra("msg")
+        if (intent.hasExtra("userid")){
+            textView.text = intent.getStringExtra("userid")
         }
-        */
         setPermission()//맨처음에 권한실행
 
         frontface_button.setOnClickListener {
@@ -57,9 +57,8 @@ class AddFaceActivity : AppCompatActivity() {
 
         rightnext_button.setOnClickListener {
 
-
             val intent = Intent(this, RightfaceActivity::class.java)
-
+            //intent.putExtra("userid2", textView)
             startActivity(intent)
             finish()
         }
@@ -122,10 +121,6 @@ class AddFaceActivity : AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
             val bitmap: Bitmap
             val file = File(curPhotoPath)
-            //추가
-            //var requestBody : RequestBody = RequestBody.create(MediaType.parse("image/*"),file)
-            //var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file",fileName,requestBody)
-
             if (Build.VERSION.SDK_INT < 28){
                 bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
                 frontface.setImageBitmap(bitmap)
@@ -137,13 +132,13 @@ class AddFaceActivity : AppCompatActivity() {
                 bitmap = ImageDecoder.decodeBitmap(decode)
                 frontface.setImageBitmap(bitmap)
             }
-            savePhoto(bitmap)
+            savePhoto(file, bitmap)
         }
 
     }
 
 
-    private fun savePhoto(bitmap: Bitmap) {//갤러리에 저장
+    private fun savePhoto(file: File, bitmap: Bitmap) {//갤러리에 저장
         val folderPath = Environment.getExternalStorageDirectory().absolutePath + "/Pictures/"
         val timestamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val fileName = "${timestamp}.jpeg"
@@ -154,41 +149,42 @@ class AddFaceActivity : AppCompatActivity() {
         val out = FileOutputStream(folderPath + fileName)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
         Toast.makeText(this, "사진이 앨범에 저장되었습니다", Toast.LENGTH_SHORT).show()
-        //sendPhoto(fileName, file)
+        sendPhoto(fileName, file)
     }
-    /*
+
     private fun sendPhoto(fileName: String, file: File) {
         var requestBody : RequestBody = RequestBody.create(MediaType.parse("image/*"),file)
-        var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
+        var textId = textView.text.toString()
+        var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", textId+".jpeg", requestBody)
+
 
         var gson : Gson = GsonBuilder()
             .setLenient()
             .create()
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.10.0.72:8000")
+            .baseUrl("http://10.10.0.162:8000")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-        var server = retrofit.create(AddfaceService::class.java)
-
-        server.requestAddface(userData.user_Id,body).enqueue(object: Callback<String> {
-            override fun onFailure(call: Call<String>, t: Throwable){
-                Log.d("레트로핏 결과1",t.message)
+        var addfaceService:AddfaceService = retrofit.create(AddfaceService::class.java)
+        addfaceService.requestAddface(body).enqueue(object: Callback<Addface> {
+            override fun onFailure(call: Call<Addface>, t: Throwable) {
+                Log.d("레트로핏 결과1", t.message)
             }
 
-            override fun onResponse(call: Call<String>, response: Response<String>){
+            override fun onResponse(call: Call<Addface>, response: Response<Addface>) {
                 if (response?.isSuccessful){
-                    Toast.makeText(getApplicationContext(), "File Uploaded Sucesssfully...", Toast.LENGTH_LONG).show();
                     Log.d("레트로핏 결과2",""+response?.body().toString())
+                    var login = response.body()
+                    Log.d("LOGIN","msg : "+login?.msg)
+                    Log.d("LOGIN","code : "+login?.code)
                 }else{
                     Toast.makeText(getApplicationContext(), "Some error occured...", Toast.LENGTH_LONG).show();
                 }
             }
-        })*/
+        })
 
     }
-    */
-
-
 }
+
