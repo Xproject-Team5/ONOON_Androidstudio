@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
@@ -46,6 +47,7 @@ class AddFaceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_face)
+        //사진을 서버로 보낼 때 id정보도 같이 보내기 위해 전 액티비티에서 받는 것
         if (intent.hasExtra("userid")){
             textView.text = intent.getStringExtra("userid")
         }
@@ -56,9 +58,9 @@ class AddFaceActivity : AppCompatActivity() {
         }
 
         rightnext_button.setOnClickListener {
-
+            var sendid = textView.text.toString()
             val intent = Intent(this, RightfaceActivity::class.java)
-            //intent.putExtra("userid2", textView)
+            intent.putExtra("sendid", sendid)
             startActivity(intent)
             finish()
         }
@@ -155,7 +157,7 @@ class AddFaceActivity : AppCompatActivity() {
     private fun sendPhoto(fileName: String, file: File) {
         var requestBody : RequestBody = RequestBody.create(MediaType.parse("image/*"),file)
         var textId = textView.text.toString()
-        var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", textId+".jpeg", requestBody)
+        var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", textId+"_1.jpeg", requestBody)
 
 
         var gson : Gson = GsonBuilder()

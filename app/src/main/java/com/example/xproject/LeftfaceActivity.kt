@@ -10,13 +10,24 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_add_face.*
 import kotlinx.android.synthetic.main.activity_leftface.*
 import kotlinx.android.synthetic.main.activity_rightface.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -30,7 +41,9 @@ class LeftfaceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_leftface)
-
+        if (intent.hasExtra("sendid")){
+            textView3.text = intent.getStringExtra("sendid")
+        }
         setPermission()//맨처음에 권한실행
 
         leftface_button.setOnClickListener {
@@ -38,6 +51,7 @@ class LeftfaceActivity : AppCompatActivity() {
         }
 
         finish_button.setOnClickListener {
+
             val intent = Intent(this, MainActivity::class.java)
 
             startActivity(intent)
@@ -114,13 +128,13 @@ class LeftfaceActivity : AppCompatActivity() {
                 bitmap = ImageDecoder.decodeBitmap(decode)
                 leftface.setImageBitmap(bitmap)
             }
-            savePhoto(bitmap)
+            savePhoto(file,bitmap)
         }
 
 
     }
 
-    private fun savePhoto(bitmap: Bitmap) {//갤러리에 저장
+    private fun savePhoto(file:File,bitmap: Bitmap) {//갤러리에 저장
         val folderPath = Environment.getExternalStorageDirectory().absolutePath + "/Pictures/"
         val timestamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val fileName = "${timestamp}.jpeg"
@@ -131,6 +145,42 @@ class LeftfaceActivity : AppCompatActivity() {
         val out = FileOutputStream(folderPath + fileName)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
         Toast.makeText(this, "사진이 앨범에 저장되었습니다", Toast.LENGTH_SHORT).show()
+
+        sendPhoto(file, fileName)
+    }
+
+    private fun sendPhoto(file: File, fileName: String) {
+        var requestBody : RequestBody = RequestBody.create(MediaType.parse("image/*"),file)
+        var textId = textView3.text.toString()
+        var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", textId+"_3.jpeg", requestBody)
+
+
+        var gson : Gson = GsonBuilder()
+            .setLenient()
+            .create()
+
+        var retrofit = Retrofit.Builder()
+            .baseUrl("http://10.10.0.162:8000")
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        var addfaceService:AddfaceService = retrofit.create(AddfaceService::class.java)
+        addfaceService.requestAddface(body).enqueue(object: Callback<Addface> {
+            override fun onFailure(call: Call<Addface>, t: Throwable) {
+                Log.d("레트로핏 결과1", t.message)
+            }
+
+            override fun onResponse(call: Call<Addface>, response: Response<Addface>) {
+                if (response?.isSuccessful){
+                    Log.d("레트로핏 결과2",""+response?.body().toString())
+                    var login = response.body()
+                    Log.d("LOGIN","msg : "+login?.msg)
+                    Log.d("LOGIN","code : "+login?.code)
+                }else{
+                    Toast.makeText(getApplicationContext(), "Some error occured...", Toast.LENGTH_LONG).show();
+                }
+            }
+        })
     }
 
 }

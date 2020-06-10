@@ -44,17 +44,19 @@ class MainActivity : AppCompatActivity() {
                             Log.d("LOGIN", "msg : " + login?.msg)
                             Log.d("LOGIN", "code : " + login?.code)
                             var dialog = AlertDialog.Builder(this@MainActivity)
-                            Toast.makeText(this@MainActivity, "로그인이 되었습니다.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MainActivity, "로그인이 되었습니다.", Toast.LENGTH_SHORT)
+                                .show()
+                            // 로그인 시 다음 창으로 이동
                             startActivity(intent)
                             finish()
                         }else{
+                            // id또는 password가 틀렸을 시 로그인이 실패되기 때문에 창 이동이 없는 경우
                             Toast.makeText(this@MainActivity, "로그인이 실패하셨습니다.", Toast.LENGTH_SHORT).show()
                         }
 
                     }
             })
         }
-        
         //회원가입 화면으로 가는 경우
         signup_button.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
