@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         var retrofit = Retrofit.Builder()
-                .baseUrl("http://10.10.0.162:8000")
+                .baseUrl("http://10.10.0.88:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         // baseUrl은 내 local 주소
@@ -47,6 +47,8 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(this@MainActivity, "로그인이 되었습니다.", Toast.LENGTH_SHORT)
                                 .show()
                             // 로그인 시 다음 창으로 이동
+                            intent.putExtra("userid", textId)
+                            //intent.putExtra("userpassword", textPw)
                             startActivity(intent)
                             finish()
                         }else{

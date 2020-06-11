@@ -93,11 +93,11 @@ class RightfaceActivity : AppCompatActivity() {
     private fun setPermission() {
         val permission = object : PermissionListener {
             override fun onPermissionGranted() {//허용되었을경우 이거 수행
-                Toast.makeText(this@RightfaceActivity, "권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@RightfaceActivity, "권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                Toast.makeText(this@RightfaceActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@RightfaceActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
             }
         }
         TedPermission.with(this)
@@ -159,7 +159,7 @@ class RightfaceActivity : AppCompatActivity() {
             .create()
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.10.0.162:8000")
+            .baseUrl("http://10.10.0.88:8000")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 

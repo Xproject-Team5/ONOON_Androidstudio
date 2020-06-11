@@ -19,7 +19,7 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.10.0.162:8000")
+            .baseUrl("http://10.10.0.88:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -37,7 +37,7 @@ class SignupActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<Signup>, t: Throwable) {
                     Log.e("DEBUG1", t.message)
                     var dialog = AlertDialog.Builder(this@SignupActivity)
-                    Toast.makeText(this@SignupActivity, "통신에 실패했습니다..", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SignupActivity, "통신에 실패했습니다.", Toast.LENGTH_SHORT).show()
                 }
                 override fun onResponse(call: Call<Signup>, response: Response<Signup>) {
                     if (response?.isSuccessful) {
@@ -53,7 +53,7 @@ class SignupActivity : AppCompatActivity() {
 
                     }else {
                         // id가 중복되어 회원가입이 실패되고 창 이동이 없는 경우
-                        Toast.makeText(getApplicationContext(), "중복되었습니다.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "아이디가 중복되었습니다.", Toast.LENGTH_LONG).show();
 
                     }
                 }
