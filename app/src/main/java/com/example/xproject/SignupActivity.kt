@@ -19,7 +19,7 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.10.0.88:8000")
+            .baseUrl("http://10.10.0.163:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

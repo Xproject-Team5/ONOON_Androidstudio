@@ -1,9 +1,7 @@
 package com.example.xproject
 
 import android.app.Activity
-import android.app.TaskStackBuilder.create
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase.create
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -13,21 +11,16 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_add_face.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_signup.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +29,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.net.URI.create
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,7 +41,7 @@ class AddFaceActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_face)
         //사진을 서버로 보낼 때 id정보도 같이 보내기 위해 전 액티비티에서 받는 것
         if (intent.hasExtra("userid")){
-            textView.text = intent.getStringExtra("userid")
+            signup_id.text = intent.getStringExtra("userid")
         }
         setPermission()//맨처음에 권한실행
 
@@ -58,7 +50,7 @@ class AddFaceActivity : AppCompatActivity() {
         }
 
         rightnext_button.setOnClickListener {
-            var sendid = textView.text.toString()
+            var sendid = signup_id.text.toString()
             val intent = Intent(this, RightfaceActivity::class.java)
             intent.putExtra("sendid", sendid)
             startActivity(intent)
@@ -156,8 +148,9 @@ class AddFaceActivity : AppCompatActivity() {
 
     private fun sendPhoto(fileName: String, file: File) {
         var requestBody : RequestBody = RequestBody.create(MediaType.parse("image/*"),file)
-        var textId = textView.text.toString()
+        var textId = signup_id.text.toString()
         var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", textId+"_1.jpeg", requestBody)
+        //var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", fileName+"_1.jpeg", requestBody)
 
 
         var gson : Gson = GsonBuilder()
@@ -165,7 +158,7 @@ class AddFaceActivity : AppCompatActivity() {
             .create()
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.10.0.88:8000")
+            .baseUrl("http://10.10.0.163:8000")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 

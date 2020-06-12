@@ -160,7 +160,7 @@ class LeftfaceActivity : AppCompatActivity() {
             .create()
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.10.0.88:8000")
+            .baseUrl("http://10.10.0.163:8000")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
