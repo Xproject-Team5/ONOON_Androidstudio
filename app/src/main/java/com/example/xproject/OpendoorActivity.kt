@@ -1,34 +1,28 @@
 package com.example.xproject
 
 import android.app.Activity
-import android.app.TaskStackBuilder.create
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase.create
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
-import kotlinx.android.synthetic.main.activity_add_face.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_opendoor.*
-import kotlinx.android.synthetic.main.activity_signup.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,9 +31,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.net.URI.create
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class OpendoorActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
@@ -60,9 +54,10 @@ class OpendoorActivity : AppCompatActivity() {
 
         open_button.setOnClickListener {
             takeCapture()//사진촬영
-        }
 
+        }
     }
+
 
     private fun takeCapture() {//카메라 실행
         //기본카메라 앱 실행
@@ -164,8 +159,16 @@ class OpendoorActivity : AppCompatActivity() {
             .setLenient()
             .create()
 
+        var okHttpClient= OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
+
+
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.10.0.163:8000")
+            .baseUrl("http://192.168.0.211:8000")
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
@@ -173,6 +176,10 @@ class OpendoorActivity : AppCompatActivity() {
         opendoorService.requestOpendoor(body).enqueue(object : Callback<Addface> {
             override fun onFailure(call: Call<Addface>, t: Throwable) {
                 Log.d("레트로핏 결과1", t.message)
+                var dialog = AlertDialog.Builder(this@OpendoorActivity)
+                dialog.setTitle("User:"+textId)
+                dialog.setMessage("얼굴인식에 실패하였습니다.")
+                dialog.show()
             }
 
             override fun onResponse(call: Call<Addface>, response: Response<Addface>) {
@@ -188,11 +195,10 @@ class OpendoorActivity : AppCompatActivity() {
                     dialog.show()
 
                 } else {
-                    Toast.makeText(
-                        getApplicationContext(),
-                        "Some error occured...",
-                        Toast.LENGTH_LONG
-                    ).show();
+                    var dialog = AlertDialog.Builder(this@OpendoorActivity)
+                    dialog.setTitle("User:"+textId)
+                    dialog.setMessage("얼굴인식에 실패하였습니다.")
+                    dialog.show()
                 }
             }
         })

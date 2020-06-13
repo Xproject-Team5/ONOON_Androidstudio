@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         var retrofit = Retrofit.Builder()
-                .baseUrl("http://10.10.0.163:8000")
+                .baseUrl("http://192.168.0.211:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         // baseUrl은 내 local 주소
