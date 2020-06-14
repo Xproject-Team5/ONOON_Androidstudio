@@ -158,7 +158,7 @@ class AddFaceActivity : AppCompatActivity() {
             .create()
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.10.0.127:8000")
+            .baseUrl("http://192.168.0.211:8000")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 

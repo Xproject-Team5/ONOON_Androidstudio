@@ -160,8 +160,8 @@ class OpendoorActivity : AppCompatActivity() {
             .create()
 
         var okHttpClient= OkHttpClient.Builder()
-            .connectTimeout(5, TimeUnit.MINUTES)
-            .readTimeout(10, TimeUnit.MINUTES)
+            .connectTimeout(8, TimeUnit.MINUTES)
+            .readTimeout(20, TimeUnit.MINUTES)
             .writeTimeout(15, TimeUnit.SECONDS)
             .build()
 
