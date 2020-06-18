@@ -167,7 +167,7 @@ class OpendoorActivity : AppCompatActivity() {
 
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.211:8000")
+            .baseUrl("http://192.168.0.213:8000")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

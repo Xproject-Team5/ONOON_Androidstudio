@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         var retrofit = Retrofit.Builder()
-                .baseUrl("http://192.168.0.211:8000")
+                .baseUrl("http://192.168.0.213:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         // baseUrl은 내 local 주소
@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
             var textId = editTextTextPersonName.text.toString()
             var textPw = editTextTextPassword.text.toString()
             val intent = Intent(this, OpendoorActivity::class.java)
-
             loginService.requestLogin(textId, textPw).enqueue(object : Callback<Login> {
                     override fun onFailure(call: Call<Login>, t: Throwable) {
                         Log.e("DEBUG", t.message)
@@ -55,7 +54,6 @@ class MainActivity : AppCompatActivity() {
                             // id또는 password가 틀렸을 시 로그인이 실패되기 때문에 창 이동이 없는 경우
                             Toast.makeText(this@MainActivity, "로그인이 실패하셨습니다.", Toast.LENGTH_SHORT).show()
                         }
-
                     }
             })
         }

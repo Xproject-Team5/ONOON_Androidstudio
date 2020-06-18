@@ -35,7 +35,7 @@ import java.util.*
 class AddFaceActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     lateinit var curPhotoPath: String
-
+    var take_picture =0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_face)
@@ -43,18 +43,23 @@ class AddFaceActivity : AppCompatActivity() {
         if (intent.hasExtra("userid")){
             signup_id.text = intent.getStringExtra("userid")
         }
-        setPermission()//맨처음에 권한실행
+        //맨처음에 권한실행
+        setPermission()
 
         frontface_button.setOnClickListener {
             takeCapture()//사진촬영
         }
-
         rightnext_button.setOnClickListener {
-            var sendid = signup_id.text.toString()
-            val intent = Intent(this, RightfaceActivity::class.java)
-            intent.putExtra("sendid", sendid)
-            startActivity(intent)
-            finish()
+            if(take_picture ==1) {
+                var sendid = signup_id.text.toString()
+                val intent = Intent(this, RightfaceActivity::class.java)
+                intent.putExtra("sendid", sendid)
+                startActivity(intent)
+                finish()
+            }
+            else {
+                Toast.makeText(this, "사진을 찍어야 다음 단계로 넘어갈 수 있습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -76,10 +81,8 @@ class AddFaceActivity : AppCompatActivity() {
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
-
             }
         }
-
     }
 
     private fun createImageFile(): File? {//이미지파일 생성
@@ -106,7 +109,6 @@ class AddFaceActivity : AppCompatActivity() {
             .setDeniedMessage("권한을 거부하였습니다.")
             .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA)
             .check()
-
     }
 
     // 사진이 찍혔다는 신호가 오면
@@ -137,6 +139,7 @@ class AddFaceActivity : AppCompatActivity() {
         val timestamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val fileName = "${timestamp}.jpeg"
         val folder = File(folderPath)
+        take_picture =1
         if(!folder.isDirectory) {//현재 해당경로에 폴더가 존재하는지
             folder.mkdir()
         }
@@ -150,31 +153,29 @@ class AddFaceActivity : AppCompatActivity() {
         var requestBody : RequestBody = RequestBody.create(MediaType.parse("image/*"),file)
         var textId = signup_id.text.toString()
         var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", textId+"_1.jpeg", requestBody)
-        //var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", fileName+"_1.jpeg", requestBody)
-
 
         var gson : Gson = GsonBuilder()
             .setLenient()
             .create()
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.211:8000")
+            .baseUrl("http://192.168.0.213:8000")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
         var addfaceService:AddfaceService = retrofit.create(AddfaceService::class.java)
         addfaceService.requestAddface(body).enqueue(object: Callback<Addface> {
+            // 비동기식 전송
             override fun onFailure(call: Call<Addface>, t: Throwable) {
-                Log.d("레트로핏 결과1", t.message)
+                Log.d("통신 실패", t.message) // 통신에 실패 했을 시
             }
-
             override fun onResponse(call: Call<Addface>, response: Response<Addface>) {
-                if (response?.isSuccessful){
-                    Log.d("레트로핏 결과2",""+response?.body().toString())
+                if (response?.isSuccessful){ // 통신에 성공하고 응답이 왔을 경우
+                    Log.d("통신 성공",""+response?.body().toString())
                     var login = response.body()
                     Log.d("LOGIN","msg : "+login?.msg)
                     Log.d("LOGIN","code : "+login?.code)
-                }else{
+                }else{ //통신에 성공하였지만 응답이 오지 않았을 경우
                     Toast.makeText(getApplicationContext(), "Some error occured...", Toast.LENGTH_LONG).show();
                 }
             }

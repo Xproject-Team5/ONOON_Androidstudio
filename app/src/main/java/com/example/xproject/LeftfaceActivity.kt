@@ -37,6 +37,7 @@ import java.util.*
 class LeftfaceActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     lateinit var curPhotoPath: String
+    var take_picture =0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,11 +52,14 @@ class LeftfaceActivity : AppCompatActivity() {
         }
 
         finish_button.setOnClickListener {
+            if(take_picture ==1) {
+                val intent = Intent(this, MainActivity::class.java)
 
-            val intent = Intent(this, MainActivity::class.java)
-
-            startActivity(intent)
-            finish()
+                startActivity(intent)
+                finish()
+            }else{
+                Toast.makeText(this, "사진을 찍어야 얼굴 등록이 완료됩니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -139,6 +143,7 @@ class LeftfaceActivity : AppCompatActivity() {
         val timestamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val fileName = "${timestamp}.jpeg"
         val folder = File(folderPath)
+        take_picture =1
         if(!folder.isDirectory) {//현재 해당경로에 폴더가 존재하는지
             folder.mkdir()
         }
@@ -160,7 +165,7 @@ class LeftfaceActivity : AppCompatActivity() {
             .create()
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.211:8000")
+            .baseUrl("http://192.168.0.213:8000")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 

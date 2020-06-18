@@ -19,14 +19,10 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.211:8000")
+            .baseUrl("http://192.168.0.213:8000")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
         var signupservice: SignupService = retrofit.create(SignupService::class.java)
-
-
-
 
         register_addface.setOnClickListener {
             var textId = register_id.text.toString()

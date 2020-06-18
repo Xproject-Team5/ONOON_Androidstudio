@@ -36,6 +36,7 @@ import java.util.*
 class RightfaceActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     lateinit var curPhotoPath: String
+    var take_picture =0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +51,15 @@ class RightfaceActivity : AppCompatActivity() {
         }
 
         leftnext_button.setOnClickListener {
-            var sendid = textView2.text.toString()
-            val intent = Intent(this, LeftfaceActivity::class.java)
-            intent.putExtra("sendid", sendid)
-            startActivity(intent)
-            finish()
+            if(take_picture ==1) {
+                var sendid = textView2.text.toString()
+                val intent = Intent(this, LeftfaceActivity::class.java)
+                intent.putExtra("sendid", sendid)
+                startActivity(intent)
+                finish()
+            }else{
+                Toast.makeText(this, "사진을 찍어야 다음 단계로 넘어갈 수 있습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -138,6 +143,7 @@ class RightfaceActivity : AppCompatActivity() {
         val timestamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val fileName = "${timestamp}.jpeg"
         val folder = File(folderPath)
+        take_picture =1
         if(!folder.isDirectory) {//현재 해당경로에 폴더가 존재하는지
             folder.mkdir()
         }
@@ -159,7 +165,7 @@ class RightfaceActivity : AppCompatActivity() {
             .create()
 
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.211:8000")
+            .baseUrl("http://192.168.0.213:8000")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
